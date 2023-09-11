@@ -5,11 +5,12 @@
 #include <utility>
 
 const int BOARD_SIZE = 8;
+const int DEPTH = 3;
 
 
 //implement a part of piece that is a bool that is true if it is fully surrounded
 //implement a function that checks if a piece is fully surrounded
-
+class PlayingBoard;
 struct piece{
     int x;
     int y;
@@ -17,10 +18,11 @@ struct piece{
     int type;
     bool surrounded = false;
     bool justPlaced = false;
+    std::pair<int, int> changedBy;
 };
 
 std::vector<std::pair<int, int>> getAllLegalMoves(const std::vector<std::vector<piece>>&, int);
-
+bool boardIsFull(PlayingBoard);
 
 class PlayingBoard{
     public:
@@ -92,6 +94,7 @@ class PlayingBoard{
                                 c = y + dc[dir];
                                 while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r][c].color == oppositeColor) {
                                     board[r][c].color = color;
+                                    board[r][c].changedBy = std::make_pair(x, y);
                                     r += dr[dir];
                                     c += dc[dir];
                                 }
@@ -99,6 +102,17 @@ class PlayingBoard{
                         }
                     }
                     board[x][y].justPlaced = false;
+                }
+            }
+        }
+        void removePiece(int x, int y){
+            board[x][y].color = 0;
+            for(int x = 0; x<8; x++){
+                for(int y = 0; y<8; y++){
+                    if (board[x][y].changedBy.first == x && board[x][y].changedBy.second == y) {
+                        board[x][y].color = board[x][y].color == 1 ? 2 : 1;
+                        board[x][y].changedBy = std::make_pair(-1, -1);
+                    }
                 }
             }
         }
