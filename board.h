@@ -56,7 +56,7 @@ class PlayingBoard{
                 for(int y = 0; y<8; y++){
                     if(y == 0){std::cout<<" "<<8-x<<" ";}
                     if(board[x][y].color==0){std::cout<<" . ";}
-                    else if(board[x][y].color==2){std::cout<<"\033[0;31m"<<" O "<<"\033[0m";}
+                    else if(board[x][y].color==1){std::cout<<"\033[0;31m"<<" O "<<"\033[0m";}
                     else std::cout<<"\033[0;36m"<<" O "<<"\033[0m";
                 }
                 std::cout<<std::endl;

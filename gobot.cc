@@ -57,13 +57,16 @@ std::vector<std::pair<int, int>> getAllLegalMoves(const std::vector<std::vector<
 int main(){
     PlayingBoard board;
     int col, row;
-    int turn = 1;
+    int turn = 2;
     board.printBoard();
     std::cout<<"You are "<<"\033[0;31m"<<"RED"<<"\033[0m"<<std::endl;
     while(!boardIsFull(board)){
         std::vector<std::pair<int, int>> legalMoves = getAllLegalMoves(board.getBoard(), turn%2+1);
 
         if(legalMoves.size()==0){
+            if(getAllLegalMoves(board.getBoard(), turn%2+1 == 2 ? 1 : 2).size()==0){
+                break;
+            }
             std::cout<<"No legal moves for player "<<turn%2+1<<std::endl;
             turn++;
             continue;
@@ -75,12 +78,12 @@ int main(){
             std::cout<<"Enter row: ";
             std::cin>>row;
 
-            //if(col == 99){
-            //    for(int i = 0; i<legalMoves.size(); i++){
-            //        std::cout<<"["<<legalMoves[i].first<<", "<<legalMoves[i].second<<"] ";
-            //    }
-            //    std::cout<<std::endl;
-            //}
+            if(col == 99){
+                for(int i = 0; i<legalMoves.size(); i++){
+                    std::cout<<"["<<legalMoves[i].first<<", "<<legalMoves[i].second<<"] ";
+                }
+                std::cout<<std::endl;
+            }
 
             if(col>8 || col<1 || row>8 || row<1){
                 std::cout<<"Invalid move"<<std::endl;
@@ -95,9 +98,13 @@ int main(){
                 continue;
             }
         }
+        //if(turn%2+1 == 1){
+        //    std::pair<int, int> move = chooseMove(board, turn%2+1);
+        //    board.placePiece(8-move.second, move.first-1, turn%2+1);            
+        //}
         else{
             std::pair<int, int> move = chooseMove(board, turn%2+1);
-            board.placePiece(8-move.first, move.second-1, turn%2+1);
+            board.placePiece(8-move.second, move.first-1, turn%2+1);
         }
 
         board.flipPieces(turn%2+1);
@@ -109,10 +116,10 @@ int main(){
         turn++;
     }
     if(evaluatePos(board, 1)>0){
-        std::cout<<"BLUE wins!"<<std::endl;
+        std::cout<<"RED wins!"<<std::endl;
     }
     else if(evaluatePos(board, 1)<0){
-        std::cout<<"RED wins!"<<std::endl;
+        std::cout<<"BLUE wins!"<<std::endl;
     }
     else{
         std::cout<<"Tie!"<<std::endl;
