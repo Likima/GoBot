@@ -12,7 +12,7 @@ bool boardIsFull(PlayingBoard board){
 }
 
 bool isValidMove(const std::vector<std::vector<piece>>& board, int row, int col, int player) {
-    if (board[col][row].color != 0) return false; // Check if the cell is empty
+    if (board[row][col].color != 0) return false; // Check if the cell is empty
 
     const int opponent = (player == 1) ? 2 : 1;
 
