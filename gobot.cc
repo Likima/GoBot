@@ -1,5 +1,5 @@
 #include "board.h"
-
+#include "goAlgorithm.h"
 //realized that this is not go, this is reversi
 
 bool boardIsFull(PlayingBoard board){
@@ -61,10 +61,10 @@ int main(){
     board.printBoard();
     std::cout<<"You are "<<"\033[0;31m"<<"RED"<<"\033[0m"<<std::endl;
     while(!boardIsFull(board)){
-        std::vector<std::pair<int, int>> legalMoves = getAllLegalMoves(board.getBoard(), turn%2+1);
-        for(int i = 0; i<legalMoves.size(); i++){
-            std::cout<<legalMoves[i].first<<" "<<legalMoves[i].second<<std::endl;
-        }
+        //std::vector<std::pair<int, int>> legalMoves = getAllLegalMoves(board.getBoard(), turn%2+1);
+        //for(int i = 0; i<legalMoves.size(); i++){
+        //    std::cout<<legalMoves[i].first<<" "<<legalMoves[i].second<<std::endl;
+        //}
         std::cout<<"Enter column: ";
         std::cin>>col;
         std::cout<<"Enter row: ";
@@ -83,6 +83,10 @@ int main(){
             continue;
         }
 
+        board.flipPieces(turn%2+1);
+
+        std::cout<<"RED has: "<<getIndividualScores(board.getBoard()).first<<" points"<<std::endl;
+        std::cout<<"BLUE has: "<<getIndividualScores(board.getBoard()).second<<" points"<<std::endl;
 
         board.printBoard();
         turn++;

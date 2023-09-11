@@ -40,6 +40,7 @@ class PlayingBoard{
 
         void placePiece(int x, int y, int color){
             board[x][y].color = color;
+            board[x][y].justPlaced = true;
         }
 
         //std::vector<std::pair<int, int>> getLegal(int color){
@@ -64,6 +65,38 @@ class PlayingBoard{
         }
         std::vector<std::vector<piece>> getBoard(){
             return board;
+        }
+
+        void flipPieces(int color){
+            int oppositeColor = color == 1 ? 2 : 1;
+            int dr[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+            int dc[] = {-1, 0, 1, -1, 1, -1, 0, 1};
+            for(int x = 0; x<8; x++){
+                for(int y = 0; y<8; y++){
+                    if(board[x][y].justPlaced){
+                        for(int dir = 0; dir<8; dir++){
+                            int r = x + dr[dir];
+                            int c = y + dc[dir];
+                            bool hasOpponentPieceBetween = false;
+                            while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r][c].color == oppositeColor) {
+                                r += dr[dir];
+                                c += dc[dir];
+                                hasOpponentPieceBetween = true;
+                            }
+                            if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && hasOpponentPieceBetween && board[r][c].color == color) {
+                                r = x + dr[dir];
+                                c = y + dc[dir];
+                                while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r][c].color == oppositeColor) {
+                                    board[r][c].color = color;
+                                    r += dr[dir];
+                                    c += dc[dir];
+                                }
+                            }
+                        }
+                    }
+                    board[x][y].justPlaced = false;
+                }
+            }
         }
 
     private:
