@@ -2,8 +2,90 @@
 
 //realized that this is not go, this is reversi
 
+bool boardIsFull(PlayingBoard board){
+    for(int x = 0; x<8; x++){
+        for(int y = 0; y<8; y++){
+            if(board.getBoard()[x][y].color==0){return false;}
+        }
+    }
+    return true;
+}
+
+bool isValidMove(const std::vector<std::vector<piece>>& board, int row, int col, int player) {
+    if (board[col][row].color != 0) return false; // Check if the cell is empty
+
+    const int opponent = (player == 1) ? 2 : 1;
+
+    // Directions for checking all eight possible directions (horizontally, vertically, and diagonally)
+    int dr[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+    int dc[] = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+    for (int dir = 0; dir < 8; ++dir) {
+        int r = row + dr[dir];
+        int c = col + dc[dir];
+        bool hasOpponentPieceBetween = false;
+
+        while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r][c].color == opponent) {
+            r += dr[dir];
+            c += dc[dir];
+            hasOpponentPieceBetween = true;
+        }
+
+        if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && hasOpponentPieceBetween && board[r][c].color == player) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+std::vector<std::pair<int, int>> getAllLegalMoves(const std::vector<std::vector<piece>>& board, char player) {
+    std::vector<std::pair<int, int>> legalMoves;
+
+    for (int row = 0; row < BOARD_SIZE; ++row) {
+        for (int col = 0; col < BOARD_SIZE; ++col) {
+            if (isValidMove(board, row, col, player)) {
+                legalMoves.emplace_back(col+1, 8-row);
+            }
+        }
+    }
+
+    return legalMoves;
+}
+
+
 int main(){
     PlayingBoard board;
+    int col, row;
+    int turn = 1;
     board.printBoard();
+    std::cout<<"You are "<<"\033[0;31m"<<"RED"<<"\033[0m"<<std::endl;
+    while(!boardIsFull(board)){
+        std::vector<std::pair<int, int>> legalMoves = getAllLegalMoves(board.getBoard(), turn%2+1);
+        for(int i = 0; i<legalMoves.size(); i++){
+            std::cout<<legalMoves[i].first<<" "<<legalMoves[i].second<<std::endl;
+        }
+        std::cout<<"Enter column: ";
+        std::cin>>col;
+        std::cout<<"Enter row: ";
+        std::cin>>row;
+
+        if(col>8 || col<1 || row>8 || row<1){
+            std::cout<<"Invalid move"<<std::endl;
+            continue;
+        }
+
+        if(isValidMove(board.getBoard(), 8-row, col-1, turn%2+1)){
+            board.placePiece(8-row, col-1, turn%2+1);
+        }
+        else{
+            std::cout<<"Invalid move"<<std::endl;
+            continue;
+        }
+
+
+        board.printBoard();
+        turn++;
+    }
     return 0;
 }
