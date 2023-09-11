@@ -20,10 +20,10 @@ int evaluatePos(PlayingBoard& board, int color){
 
 std::pair<int, int> chooseMove(PlayingBoard& board, int color){
     std::vector<std::pair<int, int>> legalMoves = getAllLegalMoves(board.getBoard(), color);
-    for(int x = 0; x<legalMoves.size(); x++){
-        legalMoves[x].first--;
-        legalMoves[x].second--;
-    }
+    //for(int x = 0; x<legalMoves.size(); x++){
+    //    legalMoves[x].first = 8-legalMoves[x].first;
+    //    legalMoves[x].second;
+    //}
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, legalMoves.size()-1);

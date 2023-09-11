@@ -45,7 +45,7 @@ std::vector<std::pair<int, int>> getAllLegalMoves(const std::vector<std::vector<
     for (int row = 0; row < BOARD_SIZE; ++row) {
         for (int col = 0; col < BOARD_SIZE; ++col) {
             if (isValidMove(board, row, col, player)) {
-                legalMoves.emplace_back(col+1, 8-row);
+                legalMoves.emplace_back(std::make_pair(col+1, 8-row));
             }
         }
     }
@@ -68,7 +68,7 @@ int main(){
             turn++;
             continue;
         }
-        
+
         if(turn%2+1 == 1){
             std::cout<<"Enter column: ";
             std::cin>>col;
@@ -97,7 +97,7 @@ int main(){
         }
         else{
             std::pair<int, int> move = chooseMove(board, turn%2+1);
-            board.placePiece(move.first, move.second, turn%2+1);
+            board.placePiece(8-move.first, move.second-1, turn%2+1);
         }
 
         board.flipPieces(turn%2+1);
