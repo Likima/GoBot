@@ -39,7 +39,7 @@ bool isValidMove(const std::vector<std::vector<piece>>& board, int row, int col,
     return false;
 }
 
-std::vector<std::pair<int, int>> getAllLegalMoves(const std::vector<std::vector<piece>>& board, char player) {
+std::vector<std::pair<int, int>> getAllLegalMoves(const std::vector<std::vector<piece>>& board, int player) {
     std::vector<std::pair<int, int>> legalMoves;
 
     for (int row = 0; row < BOARD_SIZE; ++row) {
@@ -62,44 +62,57 @@ int main(){
     std::cout<<"You are "<<"\033[0;31m"<<"RED"<<"\033[0m"<<std::endl;
     while(!boardIsFull(board)){
         std::vector<std::pair<int, int>> legalMoves = getAllLegalMoves(board.getBoard(), turn%2+1);
-        std::cout<<"Enter column: ";
-        std::cin>>col;
-        std::cout<<"Enter row: ";
-        std::cin>>row;
 
-        if(col == 99){
-            for(int i = 0; i<legalMoves.size(); i++){
-                std::cout<<"["<<legalMoves[i].first<<", "<<legalMoves[i].second<<"] ";
-            }
-            std::cout<<std::endl;
-        }
-
-        if(col>8 || col<1 || row>8 || row<1){
-            std::cout<<"Invalid move"<<std::endl;
+        if(legalMoves.size()==0){
+            std::cout<<"No legal moves for player "<<turn%2+1<<std::endl;
+            turn++;
             continue;
         }
+        
+        if(turn%2+1 == 1){
+            std::cout<<"Enter column: ";
+            std::cin>>col;
+            std::cout<<"Enter row: ";
+            std::cin>>row;
 
-        if(isValidMove(board.getBoard(), 8-row, col-1, turn%2+1)){
-            board.placePiece(8-row, col-1, turn%2+1);
+            //if(col == 99){
+            //    for(int i = 0; i<legalMoves.size(); i++){
+            //        std::cout<<"["<<legalMoves[i].first<<", "<<legalMoves[i].second<<"] ";
+            //    }
+            //    std::cout<<std::endl;
+            //}
+
+            if(col>8 || col<1 || row>8 || row<1){
+                std::cout<<"Invalid move"<<std::endl;
+                continue;
+            }
+
+            if(isValidMove(board.getBoard(), 8-row, col-1, turn%2+1)){
+                board.placePiece(8-row, col-1, turn%2+1);
+            }
+            else{
+                std::cout<<"Invalid move"<<std::endl;
+                continue;
+            }
         }
         else{
-            std::cout<<"Invalid move"<<std::endl;
-            continue;
+            std::pair<int, int> move = chooseMove(board, turn%2+1);
+            board.placePiece(move.first, move.second, turn%2+1);
         }
 
         board.flipPieces(turn%2+1);
 
-        std::cout<<"RED has: "<<getIndividualScores(board.getBoard()).first<<" points"<<std::endl;
-        std::cout<<"BLUE has: "<<getIndividualScores(board.getBoard()).second<<" points"<<std::endl;
+        std::cout<<"RED has: "<<getIndividualScores(board).first<<" points"<<std::endl;
+        std::cout<<"BLUE has: "<<getIndividualScores(board).second<<" points"<<std::endl;
 
         board.printBoard();
         turn++;
     }
-    if(evaluatePos(board.getBoard(), 1)>0){
-        std::cout<<"RED wins!"<<std::endl;
-    }
-    else if(evaluatePos(board.getBoard(), 1)<0){
+    if(evaluatePos(board, 1)>0){
         std::cout<<"BLUE wins!"<<std::endl;
+    }
+    else if(evaluatePos(board, 1)<0){
+        std::cout<<"RED wins!"<<std::endl;
     }
     else{
         std::cout<<"Tie!"<<std::endl;

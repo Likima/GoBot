@@ -6,6 +6,7 @@
 
 const int BOARD_SIZE = 8;
 
+
 //implement a part of piece that is a bool that is true if it is fully surrounded
 //implement a function that checks if a piece is fully surrounded
 
@@ -17,6 +18,9 @@ struct piece{
     bool surrounded = false;
     bool justPlaced = false;
 };
+
+std::vector<std::pair<int, int>> getAllLegalMoves(const std::vector<std::vector<piece>>&, int);
+
 
 class PlayingBoard{
     public:
